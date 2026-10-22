@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>법정의무교육 수강현황</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+
+/* Layout: 상단 바(제목 · 탭 · 잠금) → 탭별 화면 하나씩. 대시보드는 6개 교육 카드만, 세부는 교육별 현황 탭으로 */
+:root{
+  --bg:#F4F6F9; --surface:#FFFFFF; --sunk:#EDF0F5; --line:#DFE4EB;
+  --ink:#17212D; --ink2:#4B5767; --ink3:#808B9A;
+  --accent:#2549B8; --accent-soft:#E6ECFB;
+  --ok:#1E8A55; --ok-soft:#DFF2E7; --warn:#B7791F; --warn-soft:#FBF0DC; --crit:#C2413A; --crit-soft:#F9E3E1; --none:#A9B2BE;
+  --f-body:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151C; --surface:#18202A; --sunk:#212B37; --line:#2C3846;
+  --ink:#E8EDF4; --ink2:#AEB8C6; --ink3:#7E8A9A; --accent:#7E9CFF; --accent-soft:#232F4D;
+  --ok:#4FC38A; --ok-soft:#173326; --warn:#E3A84A; --warn-soft:#3A2C14; --crit:#F07A72; --crit-soft:#3D1D1B; --none:#5D6877; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151C; --surface:#18202A; --sunk:#212B37; --line:#2C3846;
+  --ink:#E8EDF4; --ink2:#AEB8C6; --ink3:#7E8A9A; --accent:#7E9CFF; --accent-soft:#232F4D;
+  --ok:#4FC38A; --ok-soft:#173326; --warn:#E3A84A; --warn-soft:#3A2C14; --crit:#F07A72; --crit-soft:#3D1D1B; --none:#5D6877; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+h1,h2,h3{margin:0;text-wrap:balance}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink3)}
+.gut{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.inner{max-width:1120px;margin:0 auto}
+
+/* 상단 바 */
+.bar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.bar .inner{display:flex;align-items:center;gap:8px 24px;flex-wrap:wrap;padding-block:12px 0}
+.brand{display:flex;flex-direction:column;margin-right:auto;padding-bottom:10px}
+.brand b{font-size:1.05rem}
+.brand span{font-size:.76rem;color:var(--ink3)}
+.lockbtn{border:0;background:none;color:var(--ink3);font-size:.8rem;padding:4px 0 10px}
+.lockbtn:hover{color:var(--ink)}
+.nav{display:flex;gap:2px;overflow-x:auto;width:100%;margin-bottom:-1px}
+.nav button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--ink3);border-bottom:2px solid transparent;white-space:nowrap}
+.nav button:hover{color:var(--ink)}
+.nav button.on{color:var(--accent);border-bottom-color:var(--accent)}
+main{padding-block:28px 96px}
+.view{display:flex;flex-direction:column;gap:28px}
+.vhead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;justify-content:space-between}
+.vhead h1{font-size:1.4rem}
+.vhead p{margin:4px 0 0;color:var(--ink2);font-size:.9rem}
+
+/* 공통 */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 13px;font-weight:600;font-size:.86rem;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.sm{padding:4px 10px;font-size:.8rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{filter:brightness(1.08);color:#fff}
+.btn.danger:hover{border-color:var(--crit);color:var(--crit)}
+select,input[type=search],input[type=password]{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:100%;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:100%;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;font-size:.82rem;font-weight:600;color:var(--ink2)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:#fff}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0}
+.sec-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-head h2{font-size:1rem}
+.empty{padding:28px;text-align:center;color:var(--ink3);background:var(--sunk);border-radius:12px;font-size:.9rem}
+.mini{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.mini i{display:block;height:100%;border-radius:3px}
+.chip{display:inline-block;font-size:.74rem;font-weight:600;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.chip.done{background:var(--ok-soft);color:var(--ok)} .chip.ing{background:var(--warn-soft);color:var(--warn)} .chip.none{background:var(--crit-soft);color:var(--crit)} .chip.gray{background:var(--sunk);color:var(--ink2)}
+
+/* 대시보드 카드 */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.cards{grid-template-columns:minmax(0,1fr)}}
+.ccard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;text-align:left;display:flex;flex-direction:column;gap:10px;min-width:0}
+button.ccard:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(30,50,90,.06)}
+.ccard .t{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.ccard .t b{font-size:.95rem}
+.ccard .t span{font-size:.74rem;color:var(--ink3);white-space:nowrap}
+.ccard .r{font-family:var(--f-num);font-size:2.2rem;font-weight:600;line-height:1}
+.ccard .m{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--ink2);flex-wrap:wrap}
+.ccard .m b{color:var(--crit)}
+.ccard .g{font-size:.76rem;color:var(--ink3)}
+.ccard.off{background:transparent;border-style:dashed}
+.ccard.off .r{font-size:1rem;color:var(--none);font-family:var(--f-body);font-weight:500}
+
+/* 교육별 */
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pills button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.84rem;font-weight:600;color:var(--ink2)}
+.pills button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.pills button:disabled{opacity:.45;cursor:default}
+.summary{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:760px){.summary{grid-template-columns:minmax(0,1fr)}}
+.big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.big .v{font-family:var(--f-num);font-size:3rem;font-weight:600;line-height:1}
+.big .s{font-size:.82rem;color:var(--ink3)}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--sunk);margin:14px 0 12px}
+.stack i{display:block;height:100%}
+.counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.counts div{display:flex;flex-direction:column;min-width:0}
+.counts .k{font-size:.74rem;color:var(--ink3);white-space:nowrap}
+.counts .v{font-family:var(--f-num);font-size:1.2rem;font-weight:600}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.side .lab{font-size:.78rem;color:var(--ink3);font-weight:600}
+.gl{display:flex;flex-direction:column;gap:4px}
+.gl .top{display:flex;justify-content:space-between;font-size:.86rem}
+.trend svg{width:100%;height:auto;display:block}
+.note{font-size:.78rem;color:var(--ink3);margin-top:10px}
+.note details{display:inline}
+.note summary{display:inline;cursor:pointer;color:var(--accent)}
+.note .ppl{margin-top:6px;line-height:1.8;color:var(--ink2)}
+
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th{font-size:.74rem;color:var(--ink3);font-weight:600;text-align:left;padding:0;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
+th>span,th>button{display:block;padding:8px 10px}
+th>button{background:none;border:0;width:100%;text-align:inherit;font-weight:600;color:inherit;font-size:inherit}
+th>button:hover,th.sorted>button{color:var(--accent)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td.r,th.r{text-align:right}
+tr.dept{cursor:pointer}
+tr.dept:hover td{background:var(--sunk)}
+tr.dept td:first-child{font-weight:600}
+.caret{display:inline-block;width:12px;color:var(--ink3);transition:transform .15s}
+tr.dept.open .caret{transform:rotate(90deg)}
+tr.team td{font-size:.82rem;color:var(--ink2);background:var(--bg)}
+tr.team td:first-child{padding-left:30px}
+tr.total td{font-weight:700;border-bottom:0}
+.bar8{position:relative;height:8px;border-radius:4px;background:var(--sunk);min-width:90px}
+.bar8 i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.delta{font-family:var(--f-num);font-size:.78rem}
+.delta.up{color:var(--ok)} .delta.down{color:var(--crit)}
+.subtabs{display:flex;gap:16px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.subtabs button{border:0;background:none;padding:8px 0;font-weight:600;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px}
+.subtabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.scroll{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.scroll th{position:sticky;top:0;z-index:1}
+.scroll tr:last-child td{border-bottom:0}
+tr.tdetail td{white-space:normal;background:var(--bg);font-size:.82rem;color:var(--ink2);line-height:1.8}
+.exrow{display:inline-flex;gap:4px}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stats span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.8rem;color:var(--ink2)}
+.stats b{color:var(--ink);font-family:var(--f-num)}
+
+/* 관리 */
+.drop{border:2px dashed var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:14px;padding:30px 20px;text-align:center;width:100%;display:flex;flex-direction:column;gap:4px;align-items:center}
+.drop b{font-size:1.05rem}
+.drop span{font-size:.82rem;opacity:.85}
+.drop.over{background:var(--accent);color:#fff;border-style:solid}
+.admgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.list li{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:0}
+.list li>span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.guide ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:10px;font-size:.86rem;color:var(--ink2)}
+.guide li b{display:block;color:var(--ink)}
+.guide code{font-family:var(--f-num);font-size:.78rem;background:var(--sunk);padding:1px 5px;border-radius:4px;word-break:break-all}
+.pwrow{display:flex;gap:8px;flex-wrap:wrap}
+.pwrow input{flex:1 1 160px}
+
+/* 게시 바 */
+.pub{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--ink);color:var(--bg);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px))}
+.pub .inner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.pub .btn{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+
+/* 잠금 화면 */
+.lock{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:60px}
+.lockcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px 28px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px}
+.lockcard h1{font-size:1.3rem}
+.lockcard p{margin:0;color:var(--ink2);font-size:.88rem}
+.lockcard input{width:100%;padding:10px 12px;font-size:1rem}
+.lockcard .btn{justify-content:center;padding:10px}
+.lockcard .err{color:var(--crit);font-size:.84rem;min-height:1.2em}
+.toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);z-index:20}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.ccard.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+
+body{margin:0}
+.bar .inner{padding-block:16px}
+.brand{padding-bottom:0}
+.detail{scroll-margin-top:16px}
+.bar{position:static}
+body::before{display:none}
+</style>
+</head>
+<body>
+<div id="root"><div style="padding:40px 20px;text-align:center;color:#808B9A;font:14px sans-serif">화면을 불러오는 중이에요…</div></div>
+<script>window.addEventListener('error',function(e){var r=document.getElementById('root');if(r)r.innerHTML='<div style="padding:24px;font:14px sans-serif;color:#C2413A;line-height:1.6">화면을 그리다 오류가 났어요. 이 화면을 캡처해서 보내 주세요.<br><b>'+String(e.message||'').replace(/</g,'&lt;')+'</b> (줄 '+(e.lineno||'?')+')</div>'});</script>
+<script>
+(function(){
+// ▼ Apps Script 웹앱 주소 (…/exec 로 끝나는 주소). 처음 한 번만 붙여넣어 주세요 ▼
+const API_URL='https://script.google.com/macros/s/AKfycbz6asCQ9TqwmxTo7GR1mS1NMWT1fZqnhxq2olrs-0NufJb4YbV8cMgmxkKX0jSDnbJIEw/exec';
+let PUB=null,LOADING=true,FAILED=false;
+const SLOTS=[{k:'h1',label:'상반기 산업안전보건교육'},{k:'dis',label:'장애인 인식개선교육'},{k:'sh',label:'성희롱 예방교육'},{k:'h2',label:'하반기 산업안전보건교육'},{k:'ac',label:'청탁금지법교육'},{k:'pi',label:'개인정보보호교육'}];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct=(a,b)=>b?a/b*100:0, f1=v=>v.toFixed(1), nf=n=>Number(n).toLocaleString('ko-KR');
+const md=d=>d?d.slice(5).replace('-','/'):'';
+const rateColor=r=>r>=80?'var(--ok)':r>=50?'var(--warn)':'var(--crit)';
+const T=a=>({total:a[0],done:a[1],ing:a[2],none:a[3],rate:pct(a[1],a[0]),miss:a[0]-a[1]});
+let U={sel:null,snap:{},g:'',sort:{k:'rate',d:'asc'},open:{}};
+
+function render(){
+  const root=$('#root');
+  if(LOADING){root.innerHTML=`<header class="bar gut"><div class="inner"><div class="brand"><b>법정의무교육 수강현황</b></div></div></header><main class="gut"><div class="inner"><div class="empty">${FAILED?'현황을 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.':'현황을 불러오는 중이에요…'}</div></div></main>`;return}
+  if(!PUB||!PUB.courses||!PUB.courses.length){root.innerHTML=`<header class="bar gut"><div class="inner"><div class="brand"><b>법정의무교육 수강현황</b></div></div></header><main class="gut"><div class="inner"><div class="empty">아직 공개된 수강현황이 없어요.</div></div></main>`;return}
+  const by={},extra=[];for(const c of PUB.courses){if(c.slot&&!by[c.slot])by[c.slot]=c;else extra.push(c)}
+  if(!U.sel||!PUB.courses.some(c=>c.c===U.sel))U.sel=(by.h2||by.ac||PUB.courses[0]).c;
+  const card=(label,c)=>{if(!c)return `<div class="ccard off"><div class="t"><b>${label}</b></div><span class="r">예정</span><div class="mini"></div><div class="m"><span>아직 진행 전이에요</span></div></div>`;
+    const s=c.snaps[c.snaps.length-1],t=T(s.by[''].t);
+    const g=['사무직','비사무직'].filter(x=>s.by[x]).map(x=>`${x} ${f1(T(s.by[x].t).rate)}%`).join(' · ');
+    return `<button class="ccard${U.sel===c.c?' sel':''}" data-pick="${esc(c.c)}"><div class="t"><b>${label}</b><span>${md(s.date)} 기준</span></div><span class="r" style="color:${rateColor(t.rate)}">${f1(t.rate)}%</span><div class="mini"><i style="width:${t.rate}%;background:${rateColor(t.rate)}"></i></div><div class="m"><span class="num">이수 ${nf(t.done)} / ${nf(t.total)}명</span><span>미이수 <b class="num">${nf(t.miss)}</b>명</span></div>${g?`<div class="g">${g}</div>`:''}</button>`};
+
+  // 선택 교육
+  const C=PUB.courses.find(c=>c.c===U.sel);const n=C.snaps.length;
+  let si=U.snap[C.c];if(si==null||si>=n)si=n-1;const S=C.snaps[si],P=si>0?C.snaps[si-1]:null;
+  const hasG=!!S.by['사무직'];if(!hasG||!S.by[U.g])U.g='';
+  const cur=S.by[U.g],t=T(cur.t),prev=P&&P.by[U.g]?P.by[U.g]:null;
+  const prevD={};if(prev)for(const d of prev.d)prevD[d[0]]=pct(d[2],d[1]);
+  const depts=cur.d.map(d=>{const x=T(d.slice(1,5));return {d:d[0],...x,teams:d[5],delta:prev&&d[0] in prevD?x.rate-prevD[d[0]]:null}});
+  const {k:sk,d:sd}=U.sort,dir=sd==='asc'?1:-1;
+  depts.sort((a,b)=>{const va=sk==='delta'?(a.delta??-999):a[sk],vb=sk==='delta'?(b.delta??-999):b[sk];return (typeof va==='string'?va.localeCompare(vb):va-vb)*dir||b.total-a.total});
+  const th=(k,l,r)=>`<th class="${r?'r ':''}${sk===k?'sorted':''}"><button data-sort="${k}">${l}${sk===k?(sd==='asc'?' ▲':' ▼'):''}</button></th>`;
+  const bar=r=>`<div class="bar8"><i style="width:${r}%;background:${rateColor(r)}"></i></div>`;
+  const rows=depts.map(x=>{const op=U.open[x.d];let h=`<tr class="dept${op?' open':''}" data-dept="${esc(x.d)}"><td><span class="caret">›</span> ${esc(x.d)}</td><td class="r num">${nf(x.total)}</td><td class="r num">${nf(x.done)}</td><td class="r num">${nf(x.ing)}</td><td class="r num">${nf(x.none)}</td><td class="r num" style="color:${rateColor(x.rate)};font-weight:600">${f1(x.rate)}%</td><td>${bar(x.rate)}</td>${P?`<td class="r">${x.delta==null?'<span class="muted">–</span>':`<span class="delta ${x.delta>0.05?'up':x.delta<-0.05?'down':''}">${x.delta>=0?'+':''}${f1(x.delta)}%p</span>`}</td>`:''}</tr>`;
+    if(op)h+=x.teams.map(z=>({tm:z[0],...T(z.slice(1,5))})).sort((a,b)=>a.rate-b.rate).map(z=>`<tr class="team"><td>${esc(z.tm)}</td><td class="r num">${nf(z.total)}</td><td class="r num">${nf(z.done)}</td><td class="r num">${nf(z.ing)}</td><td class="r num">${nf(z.none)}</td><td class="r num">${f1(z.rate)}%</td><td>${bar(z.rate)}</td>${P?'<td></td>':''}</tr>`).join('');return h}).join('')
+    +`<tr class="total"><td>합계</td><td class="r num">${nf(t.total)}</td><td class="r num">${nf(t.done)}</td><td class="r num">${nf(t.ing)}</td><td class="r num">${nf(t.none)}</td><td class="r num">${f1(t.rate)}%</td><td></td>${P?'<td></td>':''}</tr>`;
+  const gside=hasG?`<div class="side"><div class="lab">구분별</div>${['사무직','비사무직'].map(g=>{const x=T(S.by[g].t);return `<div class="gl"><div class="top"><span>${g}</span><span class="num" style="color:${rateColor(x.rate)};font-weight:600">${f1(x.rate)}% <span class="muted" style="font-weight:400">(${nf(x.done)}/${nf(x.total)})</span></span></div><div class="mini"><i style="width:${x.rate}%;background:${rateColor(x.rate)}"></i></div></div>`}).join('')}</div>`:'<div></div>';
+
+  root.innerHTML=`<header class="bar gut"><div class="inner"><div class="brand"><b>법정의무교육 수강현황</b><span>${PUB.updated?md(PUB.updated)+' 업데이트':''}</span></div></div></header>
+  <main class="gut"><div class="inner"><div class="view">
+    <section><div class="sec-head"><h2>2026 교육별 수강률</h2><span class="muted" style="font-size:.82rem">카드를 누르면 아래에 국실본부별 현황이 나와요</span></div>
+      <div class="cards">${SLOTS.map(s=>card(s.label,by[s.k])).join('')}${extra.map(c=>card(esc(c.c),c)).join('')}</div></section>
+    <section class="detail" id="detail">
+      <div class="box">
+        <div class="sec-head" style="margin-bottom:18px"><h2 style="font-size:1.15rem">${esc(C.c)}</h2>
+          <div class="filters">${hasG?`<div class="seg">${['','사무직','비사무직'].map(g=>`<button data-g="${g}" class="${U.g===g?'on':''}">${g||'전체'}</button>`).join('')}</div>`:''}
+          ${n>1?`<select id="snapSel" aria-label="기준일">${C.snaps.map((x,i)=>`<option value="${i}"${i===si?' selected':''}>${x.date} 기준</option>`).reverse().join('')}</select>`:`<span class="muted">${S.date} 기준</span>`}</div></div>
+        <div class="summary"><div>
+          <div class="big"><span class="v" style="color:${rateColor(t.rate)}">${f1(t.rate)}%</span><span class="s">${prev?`직전(${md(P.date)}) 대비 ${(t.rate-T(prev.t).rate)>=0?'+':''}${f1(t.rate-T(prev.t).rate)}%p`:'수강률'}</span></div>
+          <div class="stack"><i style="width:${pct(t.done,t.total)}%;background:var(--ok)"></i><i style="width:${pct(t.ing,t.total)}%;background:var(--warn)"></i><i style="width:${pct(t.none,t.total)}%;background:var(--crit);opacity:.75"></i></div>
+          <div class="counts"><div><span class="k">대상</span><span class="v">${nf(t.total)}</span></div><div><span class="k"><span class="dot" style="background:var(--ok)"></span>이수</span><span class="v">${nf(t.done)}</span></div><div><span class="k"><span class="dot" style="background:var(--warn)"></span>수강중</span><span class="v">${nf(t.ing)}</span></div><div><span class="k"><span class="dot" style="background:var(--crit)"></span>미수강</span><span class="v">${nf(t.none)}</span></div></div>
+        </div>${gside}</div>
+      </div>
+    </section>
+    <section><div class="sec-head"><h2>국실본부별 수강현황</h2><span class="muted" style="font-size:.82rem">머리글을 누르면 정렬, 국실본부를 누르면 소속별로 펼쳐져요</span></div>
+      <div class="box" style="padding:6px 8px"><div class="tbl-wrap"><table><thead><tr>${th('d','국실본부')}${th('total','대상',1)}${th('done','이수',1)}${th('ing','수강중',1)}${th('none','미수강',1)}${th('rate','수강률',1)}<th></th>${P?th('delta','직전 대비',1):''}</tr></thead><tbody>${rows}</tbody></table></div></div></section>
+  </div></div></main>`;
+  const on=(s,f)=>document.querySelectorAll(s).forEach(el=>el.onclick=f);
+  on('[data-pick]',function(){U.sel=this.dataset.pick;U.open={};U.g='';render();$('#detail').scrollIntoView({behavior:'smooth',block:'start'})});
+  on('[data-g]',function(){U.g=this.dataset.g;U.open={};render()});
+  on('[data-sort]',function(){const k=this.dataset.sort;U.sort=U.sort.k===k?{k,d:U.sort.d==='asc'?'desc':'asc'}:{k,d:(k==='d'||k==='rate')?'asc':'desc'};render()});
+  on('tr.dept',function(){const d=this.dataset.dept;U.open[d]=!U.open[d];render()});
+  const ss=$('#snapSel');if(ss)ss.onchange=e=>{U.snap[C.c]=+e.target.value;render()};
+}
+render();
+fetch(API_URL+(API_URL.includes('?')?'&':'?')+'api=public&t='+Date.now())
+  .then(r=>r.json()).then(d=>{PUB=d;LOADING=false;render()})
+  .catch(()=>{FAILED=true;render()});
+})();
+</script>
+</body>
+</html>
