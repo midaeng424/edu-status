@@ -38,8 +38,8 @@ button{cursor:pointer}
 
 /* 상단 바 */
 .bar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
-.bar .inner{display:flex;align-items:center;gap:8px 24px;flex-wrap:wrap;padding-block:12px 0}
+body::before{content:"";position:fixed;top:0;right:0;left:0;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.bar .inner{display:flex;align-items:center;gap:8px 24px;flex-wrap:wrap;padding-top:12px;padding-bottom:0}
 .brand{display:flex;flex-direction:column;margin-right:auto;padding-bottom:10px}
 .brand b{font-size:1.05rem}
 .brand span{font-size:.76rem;color:var(--ink3)}
@@ -49,7 +49,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .nav button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--ink3);border-bottom:2px solid transparent;white-space:nowrap}
 .nav button:hover{color:var(--ink)}
 .nav button.on{color:var(--accent);border-bottom-color:var(--accent)}
-main{padding-block:28px 96px}
+main{padding-top:28px;padding-bottom:96px}
 .view{display:flex;flex-direction:column;gap:28px}
 .vhead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;justify-content:space-between}
 .vhead h1{font-size:1.4rem}
@@ -168,12 +168,12 @@ tr.tdetail td{white-space:normal;background:var(--bg);font-size:.82rem;color:var
 .pwrow input{flex:1 1 160px}
 
 /* 게시 바 */
-.pub{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--ink);color:var(--bg);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px))}
+.pub{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--ink);color:var(--bg);padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 .pub .inner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .pub .btn{background:var(--bg);color:var(--ink);border-color:var(--bg)}
 
 /* 잠금 화면 */
-.lock{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:60px}
+.lock{min-height:100%;display:flex;align-items:center;justify-content:center;padding-top:60px;padding-bottom:60px}
 .lockcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px 28px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px}
 .lockcard h1{font-size:1.3rem}
 .lockcard p{margin:0;color:var(--ink2);font-size:.88rem}
@@ -199,9 +199,9 @@ tr.tdetail>td{padding:4px 12px 10px 30px;background:var(--bg)}
 tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 /* 휴대폰: 핵심만 */
 @media (max-width:640px){
-  main{padding-block:16px 40px}
+  main{padding-top:16px;padding-bottom:40px}
   .view{gap:18px}
-  .bar .inner{padding-block:8px 0;gap:6px 12px}
+  .bar .inner{padding-top:8px;padding-bottom:0;gap:6px 12px}
   .brand1{min-height:28px;padding-bottom:6px}.brand1 b{font-size:.95rem}
   .logo{width:28px;height:28px;margin-bottom:6px}
   .ysel{padding:3px 8px;margin-bottom:6px;font-size:.84rem}
@@ -209,7 +209,7 @@ tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
   .vhead h1{font-size:1.15rem}.vhead p{display:none}
   .cards{gap:10px}
   .ccard .g{display:none}
-  .pills{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;margin:0 -16px;padding-inline:16px;scrollbar-width:none}
+  .pills{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
   .pills::-webkit-scrollbar{display:none}
   .pills button{white-space:nowrap;flex:none}
   .pills button:disabled{display:none}
@@ -226,7 +226,7 @@ tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
   .mycard .v{font-size:1.5rem}
   .mh{display:none}
   section>.sec-head>.muted{display:none}
-  td,th>span,th>button{padding-inline:8px}
+  td,th>span,th>button{padding-left:8px;padding-right:8px}
   .subtabs{gap:14px}
 }
 
@@ -237,7 +237,7 @@ tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .trend svg{width:100%;max-width:380px;height:auto;display:block}
 
 .foot{border-top:1px solid var(--line);background:var(--surface);margin-top:8px}
-.foot .inner{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
+.foot .inner{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center;padding-top:22px;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
 .ft-rows{display:flex;flex-direction:column;gap:10px;min-width:0}
 .ft-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px}
 .ft-row>b{min-width:86px;font-size:.84rem;color:var(--ink)}
@@ -352,6 +352,13 @@ tr[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
   .pxbase .mysel{width:100%}
 }
 
+.pktabs{display:inline-flex;background:var(--sunk);border-radius:10px;padding:3px;gap:2px}
+.pktabs button{border:0;background:none;border-radius:8px;padding:7px 16px;font-size:.92rem;font-weight:600;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.pktabs button b{font-size:1rem}
+.pktabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(20,30,50,.12)}
+.pktabs button[data-pk="none"].on b{color:var(--sn)}.pktabs button[data-pk="ing"].on b{color:var(--warn)}
+@media (max-width:640px){.pktabs button{font-size:.82rem;padding:6px 12px}.pktabs button b{font-size:.9rem}}
+
 /* ===== 글자 높이 가운데 맞춤 ===== */
 th,td{vertical-align:middle!important}
 .ccard .t,.big,.pr-who,.ft-row,.gl .top,.sec-head,.sec-head h2,.filters,.ttl,.pxbase,.pxprog,.calhead,.mycard,.mycard .mi,.ccard .m,.counts .k,.pb-row,.fset,.file,.frow,.duein,.linkbox{align-items:center!important}
@@ -392,7 +399,7 @@ function shell(body){
       <nav class="nav"><button data-view="home" class="${U.view==='home'?'on':''}">전체현황</button><button data-view="course" class="${U.view==='course'?'on':''}">교육별 현황</button>${PUB&&PUB.years&&Object.values(PUB.years).some(y=>y.proxy)?`<button data-view="proxy" class="${U.view==='proxy'?'on':''}">대리수강</button>`:''}</nav>
     </div></header><main class="gut"><div class="inner">${body}</div></main>
     <footer class="foot gut"><div class="inner">
-      <div class="ft-items ft-one"><span class="num">${PUB&&(PUB.updatedAt||PUB.updated)?(PUB.updatedAt||PUB.updated.slice(2).replace(/-/g,'.'))+' 업데이트':'업데이트 전'}</span>${window.__STALE?'<span>최신 현황 확인 중…</span>':''}<span class="num">VER1022-18</span></div>
+      <div class="ft-items ft-one"><span class="num">${PUB&&(PUB.updatedAt||PUB.updated)?(PUB.updatedAt||PUB.updated.slice(2).replace(/-/g,'.'))+' 업데이트':'업데이트 전'}</span>${window.__STALE?'<span>최신 현황 확인 중…</span>':''}<span class="num">VER1026-1</span></div>
     </div></footer>`;
 }
 const yearOf=(c,d)=>{const m=String(c).match(/(20\d{2})/);return m?m[1]:String(d||'').slice(0,4)};
@@ -408,8 +415,8 @@ function viewHome(){
   const card=(label,c,sh)=>{const L=`<span class="lf">${label}</span><span class="sf">${sh||label}</span>`;if(!c)return `<div class="ccard off"><div class="t"><b>${L}</b></div><span class="r">예정</span><div class="mini"></div><div class="m"><span>아직 진행 전</span></div></div>`;
     const s=c.snaps[c.snaps.length-1],t=T(s.by[''].t);
     const g=['사무직','비사무직'].filter(x=>s.by[x]).map(x=>`${x} ${f1(T(s.by[x].t).rate)}%`).join(' · ');
-    return `<button class="ccard" data-open="${esc(c.c)}"><div class="t"><b>${L}</b>${dShort(c.due,t.miss===0)}</div><span class="r" style="color:${rateColor(t.rate)}">${f1(t.rate)}%</span><div class="mini"><i style="width:${t.rate}%;background:${rateColor(t.rate)}"></i></div><div class="m"><span class="num mh">이수 ${nf(t.done)} / ${nf(t.total)}명</span><span>미이수 <b class="num">${nf(t.miss)}</b>명</span></div>${g?`<div class="g">${g}</div>`:''}</button>`};
-  return `<div class="view"><div class="vhead"><div><h1>${U.year} 법정의무교육</h1><p>카드를 누르면 국실본부별 현황과 미이수자 현황을 볼 수 있어요.</p></div></div>
+    return `<button class="ccard" data-open="${esc(c.c)}"><div class="t"><b>${L}</b>${dShort(c.due,t.miss===0)}</div><span class="r" style="color:${rateColor(t.rate)}">${f1(t.rate)}%</span><div class="mini"><i style="width:${t.rate}%;background:${rateColor(t.rate)}"></i></div><div class="m"><span class="num mh">이수 ${nf(t.done)} / ${nf(t.total)}명</span><span>미수강 <b class="num">${nf(t.none)}</b>명${t.ing?` <span class="muted mh">· 수강중 ${nf(t.ing)}</span>`:''}</span></div>${g?`<div class="g">${g}</div>`:''}</button>`};
+  return `<div class="view"><div class="vhead"><div><h1>${U.year} 법정의무교육</h1><p>카드를 누르면 국실본부별 현황과 미수강자·수강중 명단을 볼 수 있어요.</p></div></div>
     <div class="cards">${SLOTS.map(s=>card(s.label,by[s.k],s.s)).join('')}${extra.map(c=>card(esc(c.c),c)).join('')}</div></div>`;
 }
 
@@ -436,16 +443,17 @@ function viewCourse(){
   const gside=hasG?`<div class="side"><div class="lab">구분별</div>${['사무직','비사무직'].map(g=>{const x=T(S.by[g].t);return `<div class="gl"><div class="top"><span>${g}</span><span class="num" style="color:${rateColor(x.rate)};font-weight:600">${f1(x.rate)}% <span class="muted" style="font-weight:400">(${nf(x.done)}/${nf(x.total)})</span></span></div><div class="mini"><i style="width:${x.rate}%;background:${rateColor(x.rate)}"></i></div></div>`}).join('')}</div>`:'<div></div>';
 
   // 미이수자 (이름·상태·진행률만)
-  const pend=(S.p||[]).filter(r=>(!U.g||r[5]===U.g)&&(!U.my||r[0]===U.my)).map(r=>({dept:r[0],team:r[1],name:r[2],st:r[3],prog:r[4],g:r[5]}));
-  const teamTotal={};for(const d of cur.d)for(const z of d[5])teamTotal[d[0]+'\u0001'+z[0]]=z[1];
+  if(!['none','ing'].includes(U.pk))U.pk='none';const PKN={none:0,ing:0};for(const r of (S.p||[]))if((!U.g||r[5]===U.g)&&(!U.my||r[0]===U.my))PKN[r[3]==='수강중'?'ing':'none']++;const PK=U.pk,PKL=PK==='ing'?'수강중':'미수강';
+  const pend=(S.p||[]).filter(r=>(!U.g||r[5]===U.g)&&(!U.my||r[0]===U.my)&&((r[3]==='수강중')===(PK==='ing'))).map(r=>({dept:r[0],team:r[1],name:r[2],st:r[3],prog:r[4],g:r[5]}));
+  const teamTotal={},teamDone={};for(const d of cur.d)for(const z of d[5]){teamTotal[d[0]+'\u0001'+z[0]]=z[1];teamDone[d[0]+'\u0001'+z[0]]=z[2]}
   const tg={};for(const r of pend){const k=r.dept+'\u0001'+r.team;(tg[k]=tg[k]||[]).push(r)}
   const teams=Object.keys(tg).map(k=>{const [d,tm]=k.split('\u0001');return {k,d,tm,list:tg[k].sort((a,b)=>a.name.localeCompare(b.name)),total:teamTotal[k]||tg[k].length}}).sort((a,b)=>b.list.length-a.list.length||a.d.localeCompare(b.d));
   const ptable=L=>`<table class="itbl"><thead><tr><th><span>이름</span></th>${hasG?'<th><span>구분</span></th>':''}<th><span>상태</span></th><th class="r"><span>진행률</span></th></tr></thead><tbody>${L.map(r=>`<tr><td>${esc(r.name)}</td>${hasG?`<td>${esc(r.g||'–')}</td>`:''}<td><span class="chip ${chipCls(r.st)}">${esc(r.st)}</span></td><td class="r num">${r.prog}%</td></tr>`).join('')}</tbody></table>`;
   let sub='';
-  if(U.sub==='team')sub=teams.length?`<div class="scroll"><table><thead><tr><th><span>국실본부 · 소속</span></th><th class="r"><span>미이수</span></th><th class="r"><span>수강률</span></th></tr></thead><tbody>${teams.map((x,i)=>`<tr class="dept${U.topen[x.k]?' open':''}" data-tview="${i}" tabindex="0" aria-expanded="${U.topen[x.k]?'true':'false'}"><td><span class="caret">›</span> ${esc(x.d)} <span class="muted" style="font-weight:400">·</span> ${esc(x.tm)}</td><td class="r num" style="color:var(--crit);font-weight:600">${nf(x.list.length)} <span class="muted" style="font-weight:400">/ ${nf(x.total)}</span></td><td class="r num">${f1(pct(x.total-x.list.length,x.total))}%</td></tr>${U.topen[x.k]?`<tr class="tdetail"><td colspan="3">${ptable(x.list)}</td></tr>`:''}`).join('')}</tbody></table></div>`:`<div class="empty">미이수자가 없어요.</div>`;
+  if(U.sub==='team')sub=teams.length?`<div class="scroll"><table><thead><tr><th><span>국실본부 · 소속</span></th><th class="r"><span>${PKL}</span></th><th class="r"><span>수강률</span></th></tr></thead><tbody>${teams.map((x,i)=>`<tr class="dept${U.topen[x.k]?' open':''}" data-tview="${i}" tabindex="0" aria-expanded="${U.topen[x.k]?'true':'false'}"><td><span class="caret">›</span> ${esc(x.d)} <span class="muted" style="font-weight:400">·</span> ${esc(x.tm)}</td><td class="r num" style="color:${PK==='ing'?'var(--warn)':'var(--crit)'};font-weight:600">${nf(x.list.length)} <span class="muted" style="font-weight:400">/ ${nf(x.total)}</span></td><td class="r num">${f1(pct(teamDone[x.k]||0,x.total))}%</td></tr>${U.topen[x.k]?`<tr class="tdetail"><td colspan="3">${ptable(x.list)}</td></tr>`:''}`).join('')}</tbody></table></div>`:`<div class="empty">${PKL}인 사람이 없어요.</div>`;
   else{const L=pend.slice().sort((a,b)=>a.dept.localeCompare(b.dept)||a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
     sub=`<div class="muted num" style="margin-bottom:10px;font-size:.84rem">${U.my?esc(U.my)+' · ':''}${nf(L.length)}명</div>
-      <div class="scroll"><table><thead><tr><th><span>국실본부</span></th><th><span>소속</span></th><th><span>이름</span></th>${hasG?'<th><span>구분</span></th>':''}<th><span>상태</span></th><th class="r"><span>진행률</span></th></tr></thead><tbody>${L.map(r=>`<tr><td>${esc(r.dept)}</td><td>${esc(r.team)}</td><td>${esc(r.name)}</td>${hasG?`<td>${esc(r.g||'–')}</td>`:''}<td><span class="chip ${chipCls(r.st)}">${esc(r.st)}</span></td><td class="r num">${r.prog}%</td></tr>`).join('')||'<tr><td colspan="6" class="muted">미이수자가 없어요.</td></tr>'}</tbody></table></div>`}
+      <div class="scroll"><table><thead><tr><th><span>국실본부</span></th><th><span>소속</span></th><th><span>이름</span></th>${hasG?'<th><span>구분</span></th>':''}<th><span>상태</span></th><th class="r"><span>진행률</span></th></tr></thead><tbody>${L.map(r=>`<tr><td>${esc(r.dept)}</td><td>${esc(r.team)}</td><td>${esc(r.name)}</td>${hasG?`<td>${esc(r.g||'–')}</td>`:''}<td><span class="chip ${chipCls(r.st)}">${esc(r.st)}</span></td><td class="r num">${r.prog}%</td></tr>`).join('')||`<tr><td colspan="6" class="muted">${PKL}인 사람이 없어요.</td></tr>`}</tbody></table></div>`}
   U._teams=teams;U._C=C;
 
   return `<div class="view">
@@ -459,12 +467,12 @@ function viewCourse(){
         <div class="stack">${t.done?`<i style="width:${pct(t.done,t.total)}%;background:var(--sd)"></i>`:''}${t.ing?`<i style="width:${pct(t.ing,t.total)}%;background:var(--si)"></i>`:''}${t.none?`<i style="width:${pct(t.none,t.total)}%;background:var(--sn)"></i>`:''}</div>
         <div class="counts"><div><span class="k">${U.my?'전사 대상':'대상'}</span><span class="v">${nf(t.total)}</span></div><div><span class="k"><span class="dot" style="background:var(--sd)"></span>이수</span><span class="v">${nf(t.done)}</span></div><div><span class="k"><span class="dot" style="background:var(--si)"></span>수강중</span><span class="v">${nf(t.ing)}</span></div><div><span class="k"><span class="dot" style="background:var(--sn)"></span>미수강</span><span class="v">${nf(t.none)}</span></div></div>
       </div>${gside}</div>
-      ${myX?`<div class="mycard"><div><span class="lab">${esc(myX.d)}</span><span class="v num" style="color:${rateColor(myX.rate)}">${f1(myX.rate)}%</span></div><div class="mi"><span>이수 <b class="num">${nf(myX.done)}</b> / ${nf(myX.total)}명</span><span>미이수 <b class="num" style="color:var(--crit)">${nf(myX.total-myX.done)}</b>명</span><span>전사 대비 <b class="num delta ${myX.rate-t.rate>=0?'up':'down'}">${myX.rate-t.rate>=0?'+':''}${f1(myX.rate-t.rate)}%p</b></span>${myX.delta!=null?`<span>직전 대비 <b class="num">${myX.delta>=0?'+':''}${f1(myX.delta)}%p</b></span>`:''}</div></div>`:''}
+      ${myX?`<div class="mycard"><div><span class="lab">${esc(myX.d)}</span><span class="v num" style="color:${rateColor(myX.rate)}">${f1(myX.rate)}%</span></div><div class="mi"><span>이수 <b class="num">${nf(myX.done)}</b> / ${nf(myX.total)}명</span><span>미수강 <b class="num" style="color:var(--crit)">${nf(myX.none)}</b>명</span><span>수강중 <b class="num" style="color:var(--warn)">${nf(myX.ing)}</b>명</span><span>전사 대비 <b class="num delta ${myX.rate-t.rate>=0?'up':'down'}">${myX.rate-t.rate>=0?'+':''}${f1(myX.rate-t.rate)}%p</b></span>${myX.delta!=null?`<span>직전 대비 <b class="num">${myX.delta>=0?'+':''}${f1(myX.delta)}%p</b></span>`:''}</div></div>`:''}
       <div class="legend"><span style="font-weight:600">수강률 색 기준</span><span><span class="dot" style="background:var(--ok)"></span>80% 이상</span><span><span class="dot" style="background:var(--warn)"></span>50~80%</span><span><span class="dot" style="background:var(--crit)"></span>50% 미만</span></div>
     </section>
     <section><div class="sec-head"><h2>${U.my?esc(U.my)+' 소속별 수강현황':'국실본부별 수강현황'}</h2><span class="muted" style="font-size:.82rem">${U.my?'<button class="linkbtn" id="myClear">전체 국실본부 보기</button>':'머리글을 누르면 정렬, 국실본부를 누르면 소속별로 펼쳐져요'}</span></div>
       <div class="box" style="padding:6px 8px"><div class="tbl-wrap"><table><thead><tr>${th('d','국실본부')}${th('total','대상',1).replace('<th class="','<th class="mh ')}${th('done','이수',1).replace('<th class="','<th class="mh ')}${th('ing','수강중',1).replace('<th class="','<th class="hs ')}${th('none','미수강',1)}${th('rate','수강률',1)}<th class="hs"></th>${P?th('delta','직전 대비',1).replace('<th class="','<th class="mh '):''}</tr></thead><tbody>${rows}</tbody></table></div></div></section>
-    <section><div class="sec-head"><h2>${U.my?esc(U.my)+' ':''}미이수자 ${nf(pend.length)}명</h2></div>
+    <section><div class="sec-head">${U.my?`<h2>${esc(U.my)}</h2>`:''}<div class="pktabs"><button data-pk="none" class="${PK==='none'?'on':''}">미수강 <b class="num">${nf(PKN.none)}</b>명</button><button data-pk="ing" class="${PK==='ing'?'on':''}">수강중 <b class="num">${nf(PKN.ing)}</b>명</button></div></div>
       <div class="subtabs"><button data-sub="team" class="${U.sub==='team'?'on':''}">팀별</button><button data-sub="list" class="${U.sub==='list'?'on':''}">전체 명단</button></div>${sub}</section>
   </div>`;
 }
@@ -535,6 +543,7 @@ function render(){
   on('tr[data-tview]',function(){const x=U._teams[+this.dataset.tview];U.topen[x.k]=!U.topen[x.k];render()});
   on('[data-sub]',function(){U.sub=this.dataset.sub;render()});
   on('[data-pf]',function(){U.pf=this.dataset.pf;render()});
+  on('[data-pk]',function(){U.pk=this.dataset.pk;U.topen={};render()});
   const ss=$('#snapSel');if(ss)ss.onchange=e=>{U.snap[U._C.c]=+e.target.value;render()};
 }
 const toTop=document.createElement('button');toTop.className='totop';toTop.setAttribute('aria-label','맨 위로');toTop.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l-7 7m7-7l7 7M12 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';toTop.onclick=()=>scrollTo({top:0,behavior:'smooth'});document.body.appendChild(toTop);
