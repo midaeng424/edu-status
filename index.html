@@ -399,7 +399,7 @@ function shell(body){
       <nav class="nav"><button data-view="home" class="${U.view==='home'?'on':''}">전체현황</button><button data-view="course" class="${U.view==='course'?'on':''}">교육별 현황</button>${PUB&&PUB.years&&Object.values(PUB.years).some(y=>y.proxy)?`<button data-view="proxy" class="${U.view==='proxy'?'on':''}">대리수강</button>`:''}</nav>
     </div></header><main class="gut"><div class="inner">${body}</div></main>
     <footer class="foot gut"><div class="inner">
-      <div class="ft-items ft-one"><span class="num">${PUB&&(PUB.updatedAt||PUB.updated)?(PUB.updatedAt||PUB.updated.slice(2).replace(/-/g,'.'))+' 업데이트':'업데이트 전'}</span>${window.__STALE?'<span>최신 현황 확인 중…</span>':''}<span class="num">VER1026-1</span></div>
+      <div class="ft-items ft-one"><span class="num">${PUB&&(PUB.updatedAt||PUB.updated)?(PUB.updatedAt||PUB.updated.slice(2).replace(/-/g,'.'))+' 업데이트':'업데이트 전'}</span>${window.__STALE?'<span>최신 현황 확인 중…</span>':''}<span class="num">VER1026-2</span></div>
     </div></footer>`;
 }
 const yearOf=(c,d)=>{const m=String(c).match(/(20\d{2})/);return m?m[1]:String(d||'').slice(0,4)};
@@ -419,6 +419,11 @@ function viewHome(){
   return `<div class="view"><div class="vhead"><div><h1>${U.year} 법정의무교육</h1><p>카드를 누르면 국실본부별 현황과 미수강자·수강중 명단을 볼 수 있어요.</p></div></div>
     <div class="cards">${SLOTS.map(s=>card(s.label,by[s.k],s.s)).join('')}${extra.map(c=>card(esc(c.c),c)).join('')}</div></div>`;
 }
+
+/* 표 머리글 눌러 정렬 (오름차순 ▲ / 내림차순 ▼) */
+function lsTh(key,k,l,cls){const s=(U.ls||{})[key]||{};const on=s.k===k;return `<th class="${cls||''}${on?' sorted':''}"><button data-ls="${key}|${k}">${l}${on?(s.d==='asc'?' ▲':' ▼'):''}</button></th>`}
+function lsSort(key,list,get){const s=(U.ls||{})[key];if(!s||!s.k)return list;const dir=s.d==='asc'?1:-1;get=get||((r,k)=>r[k]);
+  return list.slice().sort((a,b)=>{const va=get(a,s.k),vb=get(b,s.k);return (typeof va==='number'&&typeof vb==='number'?va-vb:String(va??'').localeCompare(String(vb??''),'ko',{numeric:true}))*dir})}
 
 function viewCourse(){
   const {by,extra}=slots();
@@ -453,7 +458,7 @@ function viewCourse(){
   if(U.sub==='team')sub=teams.length?`<div class="scroll"><table><thead><tr><th><span>국실본부 · 소속</span></th><th class="r"><span>${PKL}</span></th><th class="r"><span>수강률</span></th></tr></thead><tbody>${teams.map((x,i)=>`<tr class="dept${U.topen[x.k]?' open':''}" data-tview="${i}" tabindex="0" aria-expanded="${U.topen[x.k]?'true':'false'}"><td><span class="caret">›</span> ${esc(x.d)} <span class="muted" style="font-weight:400">·</span> ${esc(x.tm)}</td><td class="r num" style="color:${PK==='ing'?'var(--warn)':'var(--crit)'};font-weight:600">${nf(x.list.length)} <span class="muted" style="font-weight:400">/ ${nf(x.total)}</span></td><td class="r num">${f1(pct(teamDone[x.k]||0,x.total))}%</td></tr>${U.topen[x.k]?`<tr class="tdetail"><td colspan="3">${ptable(x.list)}</td></tr>`:''}`).join('')}</tbody></table></div>`:`<div class="empty">${PKL}인 사람이 없어요.</div>`;
   else{const L=pend.slice().sort((a,b)=>a.dept.localeCompare(b.dept)||a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
     sub=`<div class="muted num" style="margin-bottom:10px;font-size:.84rem">${U.my?esc(U.my)+' · ':''}${nf(L.length)}명</div>
-      <div class="scroll"><table><thead><tr><th><span>국실본부</span></th><th><span>소속</span></th><th><span>이름</span></th>${hasG?'<th><span>구분</span></th>':''}<th><span>상태</span></th><th class="r"><span>진행률</span></th></tr></thead><tbody>${L.map(r=>`<tr><td>${esc(r.dept)}</td><td>${esc(r.team)}</td><td>${esc(r.name)}</td>${hasG?`<td>${esc(r.g||'–')}</td>`:''}<td><span class="chip ${chipCls(r.st)}">${esc(r.st)}</span></td><td class="r num">${r.prog}%</td></tr>`).join('')||`<tr><td colspan="6" class="muted">${PKL}인 사람이 없어요.</td></tr>`}</tbody></table></div>`}
+      <div class="scroll"><table><thead><tr>${lsTh('vl','dept','국실본부')}${lsTh('vl','team','소속')}${lsTh('vl','name','이름')}${hasG?lsTh('vl','g','구분'):''}${lsTh('vl','st','상태')}${lsTh('vl','prog','진행률','r')}</tr></thead><tbody>${lsSort('vl',L,(r,k)=>k==='prog'?+r.prog:r[k]).map(r=>`<tr><td>${esc(r.dept)}</td><td>${esc(r.team)}</td><td>${esc(r.name)}</td>${hasG?`<td>${esc(r.g||'–')}</td>`:''}<td><span class="chip ${chipCls(r.st)}">${esc(r.st)}</span></td><td class="r num">${r.prog}%</td></tr>`).join('')||`<tr><td colspan="6" class="muted">${PKL}인 사람이 없어요.</td></tr>`}</tbody></table></div>`}
   U._teams=teams;U._C=C;
 
   return `<div class="view">
@@ -534,6 +539,7 @@ function render(){
   on('[data-open]',function(){U.sel=this.dataset.open;U.view='course';U.open={};U.topen={};U.g='';U.dept='';render();scrollTo(0,0)});
   on('[data-pick]',function(){U.sel=this.dataset.pick;U.open={};U.topen={};U.g='';U.dept='';render()});
   on('[data-g]',function(){U.g=this.dataset.g;U.open={};U.topen={};render()});
+  on('[data-ls]',function(){const [key,k]=this.dataset.ls.split('|');U.ls=U.ls||{};const s=U.ls[key];U.ls[key]=s&&s.k===k?{k,d:s.d==='asc'?'desc':'asc'}:{k,d:'asc'};render()});
   on('[data-sort]',function(){const k=this.dataset.sort;U.sort=U.sort.k===k?{k,d:U.sort.d==='asc'?'desc':'asc'}:{k,d:(k==='d'||k==='rate')?'asc':'desc'};render()});
   on('tr[data-dept]',function(){const d=this.dataset.dept;const cur=U.my?U.open[d]!==false:!!U.open[d];U.open[d]=!cur;render()});
   const setMy=v=>{U.my=v;U.open={};U.topen={};try{v?localStorage.setItem('eduMyDept',v):localStorage.removeItem('eduMyDept')}catch(e){}render()};
